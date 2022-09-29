@@ -5,22 +5,24 @@ const validUrl = require("valid-url")
 
 const createURL = async function (req, res) {
     try {
-        let originalURL = req.body.longUrl
+        if (Object.keys(req.body).length == 0) return res.status(400).send({ status: false, data: "Please Enter Required Data" })
+        
+        let obj = {}
+        let longUrl = req.body.longUrl
 
-        if (validUrl.isUri(originalURL)) {
-            const checkUrlInDB = await urlModel.findOne({ longUrl: originalURL })
+        if (validUrl.isUri(longUrl)) {
+            obj.longUrl = longUrl
 
+            const checkUrlInDB = await urlModel.findOne({ longUrl: longUrl })
             if (checkUrlInDB) {
                 return res.status(200).send({ status: false, message: "URL is already present please use another URL " })
             }
             else {
 
-                let baseURL = "http://localhost:3000"
+                let baseURL = "http://localhost:3000/"
                 const urlCode = shortid.generate()
-                const shortUrl = baseURL + "/" + urlCode
+                const shortUrl = baseURL + urlCode
 
-                let obj = {}
-                obj.longUrl = originalURL
                 obj.shortUrl = shortUrl
                 obj.urlCode = urlCode
 
@@ -30,7 +32,7 @@ const createURL = async function (req, res) {
 
         }
         else {
-            return res.status(401).send({ status: false, message: "Invalid Long URL" })
+            return res.status(401).send({ status: false, message: "please enter valid URL" })
         }
     }
     catch (error) {
@@ -45,15 +47,14 @@ let getUrl = async function (req, res) {
 
         //validation for urlCode
 
-        getLongUrl = await urlModel.findOne({ urlCode: urlCode }).select({ _id: 0, longUrl: 1 })
+        getLongUrl = await urlModel.findOne({ urlCode: urlCode })
 
-        if (!getLongUrl) return res.status(404).send({ status: false, msg: "no match found" })
-        return res.status(200).send({ status: true, data: getLongUrl })
+        if (!getLongUrl) return res.status(404).send({ status: false, msg: "No URL Found" })
+        return res.redirect(getLongUrl.longUrl)
     }
     catch (err) {
         return res.status(500).send({ data: err.message })
     }
-
 }
 
 module.exports.createURL = createURL
