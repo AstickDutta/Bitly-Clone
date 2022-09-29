@@ -1,0 +1,26 @@
+{
+  "name": "project4-url-shortner-group64",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulravidas024/Project4-URL-Shortner-Group64.git"
+  },
+  "keywords": [],
+  "author": "Astick Dutta, Rahul Ravidas, Afrin Akhtar, Vishal Bachhav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rahulravidas024/Project4-URL-Shortner-Group64/issues"
+  },
+  "homepage": "https://github.com/rahulravidas024/Project4-URL-Shortner-Group64#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.6.2",
+    "shortid": "^2.2.16",
+    "valid-url": "^1.0.9"
+  }
+}
