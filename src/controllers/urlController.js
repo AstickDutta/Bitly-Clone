@@ -51,7 +51,7 @@ let getUrl = async function (req, res) {
         getLongUrl = await urlModel.findOne({ urlCode: urlCode })
 
         if (!getLongUrl) return res.status(404).send({ status: false, msg: "No URL Found" })
-        return res.redirect(getLongUrl.longUrl)
+        return res.status(302).redirect(getLongUrl.longUrl)
     }
     catch (err) {
         return res.status(500).send({ data: err.message })
