@@ -13,9 +13,9 @@ const createURL = async function (req, res) {
         if (validUrl.isUri(longUrl)) {
             obj.longUrl = longUrl
 
-            const checkUrlInDB = await urlModel.findOne({ longUrl: longUrl })
+            const checkUrlInDB = await urlModel.findOne({ longUrl: longUrl }).select({_id: 0, longUrl: 1, shortUrl:1, urlCode: 1 })
             if (checkUrlInDB) {
-                return res.status(200).send({ status: false, message: "URL is already present please use another URL " })
+                return res.status(200).send({ status: false, message: "URL is already present ", data: checkUrlInDB })
             }
             else {
 
@@ -27,7 +27,8 @@ const createURL = async function (req, res) {
                 obj.urlCode = urlCode
 
                 const createURL = await urlModel.create(obj)
-                return res.status(201).send({ status: true, message: "Short URL generate successfully", data: createURL })
+                const data = await urlModel.findOne(createURL).select({_id: 0, longUrl: 1, shortUrl:1, urlCode: 1 })
+                return res.status(201).send({ status: true, message: "Short URL generate successfully", data: data })
             }
 
         }
