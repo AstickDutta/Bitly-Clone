@@ -58,7 +58,7 @@ const createURL = async function (req, res) {
 
       const checkUrlInDB = await urlModel.findOne({ longUrl: longUrl }).select({_id: 0, longUrl: 1, shortUrl: 1, urlCode: 1})
       if (checkUrlInDB) {
-        await SET_ASYNC(`${checkUrlInDB.longUrl}`, JSON.stringify(checkUrlInDB))
+        await SET_ASYNC(`${checkUrlInDB.longUrl}`, JSON.stringify(checkUrlInDB), "EX", 20*60 )
         return res.status(200).send({ status: true, message: "URL is already Exists in DB" , data: checkUrlInDB})
       }
 
@@ -70,7 +70,7 @@ const createURL = async function (req, res) {
       obj.urlCode = urlCode
 
       const createURL = await urlModel.create(obj)
-      await SET_ASYNC(`${createURL.longUrl}`, JSON.stringify(createURL))
+      await SET_ASYNC(`${createURL.longUrl}`, JSON.stringify(createURL), "EX", 20*60)
       const data = await urlModel.findOne(createURL).select({ _id: 0, longUrl: 1, shortUrl: 1, urlCode: 1 })
       return res.status(201).send({ status: true, message: "Short URL generate successfully", data: data })
 
@@ -102,7 +102,7 @@ let getUrl = async function (req, res) {
     else {
       let urlData = await urlModel.findOne({ urlCode: urlCode })
       if (urlData) {
-        await SET_ASYNC(`${urlCode}`, JSON.stringify(urlData))
+        await SET_ASYNC(`${urlCode}`, JSON.stringify(urlData), "EX", 20*60)
         return res.status(302).redirect(urlData.longUrl)
       } else {
         return res.status(404).send({ status: false, message: "No URL Found" })
